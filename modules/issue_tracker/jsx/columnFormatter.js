@@ -1,5 +1,43 @@
 /* exported formatColumn */
 
+class WatchingCheckbox extends React.Component {
+    constructor (prop) {
+        super();
+        this.state = {
+            checked:prop.checked,
+            issue_id:prop.issue_id
+        };
+        this.onChange = this.onChange.bind(this);
+    }
+    render () {
+        return (
+            <td>
+                <input type="checkbox" checked={this.state.checked} onChange={this.onChange}/>
+            </td>
+        );
+    }
+    onChange (e) {
+        console.log(e._targetInst);
+        console.log(this);
+        var that = this;
+        $.ajax({
+            type:"PUT",
+            dataType: "json",
+            url:"/issue_tracker/ajax/ToggleMyWatching.php?issue_id=" + this.state.issue_id,
+            success: function (data) {
+                console.log(data);
+                
+                that.setState({
+                    checked:data.watching
+                });
+            },
+            error: function (err) {
+                console.log("Error", err);
+            }
+        });
+    }
+}
+
 /**
  * Modify behaviour of specified column cells in the Data Table component
  * @param {string} column - column name
@@ -96,24 +134,7 @@ function formatColumn(column, cell, rowData, rowHeaders) {
     );
   }
   if (column === 'Watching') {
-    var issue_id = row['Issue ID'];
-    var toggleMyWatching = function (e) {
-        $.ajax({
-            type:"PUT",
-            url:"/issue_tracker/ajax/ToggleMyWatching.php?issue_id=" + issue_id,
-            success: function (data) {
-                console.log(data);
-                ele.props.checked = data.watching;
-                
-                console.log(ele);
-            },
-            error: function (err) {
-                console.log(err);
-            }
-        });
-    };
-    var checkbox = (<td><input type="checkbox" checked={(cell === "1")} onChange={toggleMyWatching}/></td>)
-    return checkbox;
+    return (<WatchingCheckbox checked={cell==="1"} issue_id={row['Issue ID']}/>);
   }
 
   return <td>{cell}</td>;
