@@ -227,6 +227,15 @@ class User extends UserPermissions
         return $this->userInfo['CenterIDs'];
     }
 
+    /**
+     * Get the user's ID number.
+     *
+     * @return integer
+     */
+    function getID()
+    {
+        return $this->userInfo['ID'];
+    }
 
     /**
      * Returns all sites where Examiner is active
