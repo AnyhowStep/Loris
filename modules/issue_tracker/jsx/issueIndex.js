@@ -21,7 +21,8 @@ class IssueForm extends React.Component {
       errorMessage: null,
       isLoaded: false,
       isNewIssue: false,
-      issueID: 0
+      issueID: 0,
+      assigneeSelected: false
     };
 
     // Bind component instance to custom methods
@@ -291,7 +292,8 @@ class IssueForm extends React.Component {
           isLoaded: true,
           issueData: data.issueData,
           formData: data.issueData,
-          isNewIssue: !data.issueData.issueID
+          isNewIssue: !data.issueData.issueID,
+          assigneeSelected: data.issueData.issueID,
         });
       }.bind(this),
       error: function(err) {
@@ -368,8 +370,25 @@ class IssueForm extends React.Component {
     const formDataUpdate = this.state.formData;
     formDataUpdate[formElement] = value;
 
+    if (!this.state.assigneeSelected || formDataUpdate["assignee"] === "") {
+      if (formElement === "centerID" || formElement === "category") {
+        formDataUpdate["assignee"] = "";
+        for (var i=0; i<this.state.default_assignee_arr.length; ++i) {
+          var default_assignee = this.state.default_assignee_arr[i];
+          if (
+            default_assignee.center_id == formDataUpdate["centerID"] &&
+            default_assignee.issue_category_name == formDataUpdate["category"]
+          ) {
+            formDataUpdate["assignee"] = default_assignee.username;
+            break;
+          }
+        }
+      }
+    }
+
     this.setState({
-      formData: formDataUpdate
+      formData: formDataUpdate,
+      assigneeSelected: this.state.assigneeSelected || (formElement === "assignee"),
     });
   }
 
