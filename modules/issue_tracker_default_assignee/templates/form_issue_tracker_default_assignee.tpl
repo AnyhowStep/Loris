@@ -35,7 +35,7 @@
                         <div class="col-lg-2">
                             {assign var="delete_id" value="delete-`$center_assignee.id`-`$assignee.issue_category_id`-`$assignee.user_id`"}
                             <!--Why are all our endpoints treated as directories?-->
-                            <form id="{$delete_id}" method="POST" action="./delete/">
+                            <form id="{$delete_id}" method="POST" action="/issue_tracker_default_assignee/delete/">
                                 <input type="hidden" name="center_id" value="{$center_assignee.id}"/>
                                 <input type="hidden" name="issue_category_id" value="{$assignee.issue_category_id}"/>
                                 <input type="hidden" name="user_id" value="{$assignee.user_id}"/>
@@ -49,7 +49,7 @@
     {/foreach}
 </section>
 <section>
-    <form method="POST" action="./replace/" class="row">
+    <form method="POST" action="/issue_tracker_default_assignee/replace/" class="row">
         <!--Should really be a PUT but, IIRC, HTML forms don't exactly do PUT requests...-->
         <div class="col-lg-4">
             <p>Center</p>
