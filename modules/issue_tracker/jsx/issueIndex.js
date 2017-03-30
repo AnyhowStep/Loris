@@ -293,13 +293,27 @@ class IssueForm extends React.Component {
           issueData: data.issueData,
           formData: data.issueData,
           isNewIssue: !data.issueData.issueID,
-          assigneeSelected: data.issueData.issueID,
+          assigneeSelected: data.issueData.issueID
         });
       }.bind(this),
       error: function(err) {
         this.setState({
           error: "An error occurred when loading the form!\n Error: " +
           err.status + " (" + err.statusText + ")"
+        });
+      }.bind(this)
+    });
+    $.ajax(this.props.defaultAssigneeURL, {
+      dataType: "json",
+      success: function(data) {
+        this.setState({
+          defaultAssigneeArr: data.arr
+        });
+      }.bind(this),
+      error: function(err) {
+        this.setState({
+          error: "An error occurred when loading the form!\n Error: " +
+          err.error
         });
       }.bind(this)
     });
@@ -370,16 +384,16 @@ class IssueForm extends React.Component {
     const formDataUpdate = this.state.formData;
     formDataUpdate[formElement] = value;
 
-    if (!this.state.assigneeSelected || formDataUpdate["assignee"] === "") {
+    if (!this.state.assigneeSelected || formDataUpdate.assignee === "") {
       if (formElement === "centerID" || formElement === "category") {
-        formDataUpdate["assignee"] = "";
-        for (var i=0; i<this.state.default_assignee_arr.length; ++i) {
-          var default_assignee = this.state.default_assignee_arr[i];
+        formDataUpdate.assignee = "";
+        for (var i = 0; i < this.state.defaultAssigneeArr.length; ++i) {
+          var defaultAssignee = this.state.defaultAssigneeArr[i];
           if (
-            default_assignee.center_id == formDataUpdate["centerID"] &&
-            default_assignee.issue_category_name == formDataUpdate["category"]
+            defaultAssignee.center_id === formDataUpdate.centerID &&
+            defaultAssignee.issue_category_name === formDataUpdate.category
           ) {
-            formDataUpdate["assignee"] = default_assignee.username;
+            formDataUpdate.assignee = defaultAssignee.username;
             break;
           }
         }
@@ -388,7 +402,7 @@ class IssueForm extends React.Component {
 
     this.setState({
       formData: formDataUpdate,
-      assigneeSelected: this.state.assigneeSelected || (formElement === "assignee"),
+      assigneeSelected: this.state.assigneeSelected || (formElement === "assignee")
     });
   }
 
@@ -540,6 +554,7 @@ $(function() {
         Module="issue_tracker"
         DataURL={`${loris.BaseURL}/issue_tracker/ajax/EditIssue.php?action=getData&issueID=${args.issueID}`}
         action={`${loris.BaseURL}/issue_tracker/ajax/EditIssue.php?action=edit`}
+        defaultAssigneeURL={`${loris.BaseURL}/issue_tracker/ajax/DefaultAssignee.php`}
       />
     </div>
   );
