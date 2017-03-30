@@ -1,6 +1,8 @@
 -- ********************************
 -- DROP TABLE (ORDER MATTERS)
 -- ********************************
+DROP TABLE IF EXISTS `issues_default_assignee`;
+
 DROP TABLE IF EXISTS `acknowledgements`;
 
 DROP TABLE IF EXISTS `data_release_permissions`;
@@ -1919,4 +1921,14 @@ CREATE TABLE `feedback_mri_comments` (
   CONSTRAINT `FK_feedback_mri_comments_3` FOREIGN KEY (`FileID`) REFERENCES `files` (`FileID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-
+CREATE TABLE `issues_default_assignee` (
+  `center_id` tinyint(2) UNSIGNED NOT NULL,
+  `issue_category_id` int(11) UNSIGNED NOT NULL,
+  `user_id` int(10) UNSIGNED NOT NULL COMMENT 'This refers to the user''s numeric id and not their username. srsly.',
+  PRIMARY KEY (`issue_category_id`,`center_id`),
+  KEY `user_id` (`user_id`),
+  KEY `center_id` (`center_id`),
+  CONSTRAINT `issues_default_assignee_ibfk_1` FOREIGN KEY (`issue_category_id`) REFERENCES `issues_categories` (`categoryID`),
+  CONSTRAINT `issues_default_assignee_ibfk_2` FOREIGN KEY (`center_id`) REFERENCES `psc` (`CenterID`),
+  CONSTRAINT `issues_default_assignee_ibfk_3` FOREIGN KEY (`user_id`) REFERENCES `users` (`ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
