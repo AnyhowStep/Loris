@@ -121,7 +121,7 @@
             header("Location: /issue_tracker_default_assignee");
             die();
         }
-        //I honestly don't like that we are PUT'ing to DELETE something.
+        //I honestly don't like that we are POST'ing to PUT something.
         //But, with the current tools we have, this is the best we can manage =/
         //We seriously need a proper router...........
         public function replace () {
