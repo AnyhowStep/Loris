@@ -36,6 +36,11 @@ class SinglePointLogin
      * Internally held copy of username
      */
     var $_username = null;
+    
+    /**
+     * Internally held copy of user's id
+     */
+    var $_id = null;
 
     /**
      * To carry the error messages
@@ -47,6 +52,12 @@ class SinglePointLogin
      */
     var $_passwordExpired = false;
 
+    public function getId () {
+        return $this->_id;
+    }
+    public function getUsername () {
+        return $this->_username;
+    }
     /**
      * Dumps the login form
      *
@@ -320,10 +331,41 @@ class SinglePointLogin
         }
 
         $decodedArray    = (array) $decoded;
-        $this->_username
-            = isset($decodedArray['user'])
-                ? $decodedArray['user'] : 'Unknown';
-        return isset($decodedArray['user']);
+        
+        //This is set so that calls to isLoggedIn() return true if using JWTAuthenticate()
+        $this->_isLoggedIn = isset($decodedArray['username'], $decodedArray['id']);
+        if (!$this->_isLoggedIn) {
+            //I don't know why we're setting it to unknown when leaving it null is fine
+            //But I assume it is somehow necessary
+            $this->_username = 'Unknown';
+            return false;
+        }
+        
+        $this->_id = $decodedArray['id'];
+        $this->_username = $decodedArray['username'];
+        //Logged in successfully
+        return true;
+    }
+    //Yes, static. Doesn't seem to require a specific instance of SinglePointLogin anyway.
+    public static function CreateJWT ($token) {
+        if (!is_array($token) || !isset(
+            $token["id"],
+            $token["username"]
+            //Feel free to add more required stuff if it really is necessary for SinglePointLogin to work!
+            //Eg. $token["exp"], $token["iss"], etc.
+        )) {
+            //Your token array is missing some important information used by SinglePointLogin internally!
+            throw new Exception("Failed to create JWT");
+        }
+        
+        //Code copy-pasted from Dave's impl.
+        //I'm going to treat it as working black magic ;D
+        $factory = NDB_Factory::singleton();
+        $config  = $factory->config();
+        $www     = $config->getSetting("www");
+        $baseURL = $www['url'];
+        $key = $config->getSetting("JWTKey");
+        return Firebase\JWT\JWT::encode($token, $key, "HS256");
     }
 
     /**
@@ -400,6 +442,7 @@ class SinglePointLogin
 
         // check users table to see if we have a valid user
         $query = "SELECT COUNT(*) AS User_count,
+                        ID,
                         Password_expiry,
                         Active,
                         Pending_approval,
@@ -451,6 +494,8 @@ class SinglePointLogin
 
                 // user is valid
                 $this->_username = $username;
+                $this->_id = $row["ID"];
+                $this->_isLoggedIn = true;
 
                 $result =  $DB->insert('user_login_history', $setArray);
                 return true;
@@ -458,7 +503,7 @@ class SinglePointLogin
         }
 
         // bad usename or password
-        $this->_lastError = "Incorrect email or password";
+        $this->_lastError = "Incorrect username or password";
         return false;
     }
 
