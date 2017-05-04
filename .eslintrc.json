@@ -25,6 +25,9 @@
     }],
     "no-console": ["error", {
       "allow": ["info", "warn", "error"]
+    }],
+    "dot-notation": ["error", {
+      "allowPattern": "^[a-z]+(_[a-z]+)+$"
     }]
   },
   "globals": {
