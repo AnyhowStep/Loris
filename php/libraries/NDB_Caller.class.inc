@@ -63,6 +63,15 @@ class NDB_Caller
     }
 
     /**
+     * Checks if the request method is a GET
+     *
+     * @return bool
+     */
+    public static function isRequestMethodGet () {
+        return strtoupper($_SERVER["REQUEST_METHOD"]) == "GET";
+    }
+
+    /**
     * Renders the called menu, form or the instrument into html
     *
     * @param string $test_name The object type to load.  The test_name of the
@@ -352,6 +361,9 @@ class NDB_Caller
             }
         }
 
+        if (method_exists($menu, 'save') && !self::isRequestMethodGet()) {
+            $success = $menu->save();
+        }
         if (method_exists($menu, 'getControlPanel')) {
             $this->controlPanel = $menu->getControlPanel();
         }
@@ -360,9 +372,6 @@ class NDB_Caller
                 $_REQUEST['candID'],
                 $_REQUEST['sessionID']
             );
-        }
-        if (method_exists($menu, 'save')) {
-            $success = $menu->save();
         }
         $this->page = $menu;
         $html       = $menu->display();
@@ -384,10 +393,9 @@ class NDB_Caller
         // make an instance of the form's object
         $form = NDB_Form::factory($class, $page, $identifier);
 
-        if (method_exists($form, 'getControlPanel')) {
-            $this->controlPanel = $form->getControlPanel();
+        if (!self::isRequestMethodGet()) {
+            $success = $form->save();
         }
-        $success = $form->save();
 
         if (method_exists($form, 'getControlPanel')) {
             $this->controlPanel = $form->getControlPanel();
@@ -418,7 +426,12 @@ class NDB_Caller
             $reliability_center_id
         );
 
-        $success = $form->save();
+        //Something is going on here.
+        //reliabilityfactory() renders already,
+        //This will result in stale data
+        if (!self::isRequestMethodGet()) {
+            $success = $form->save();
+        }
 
         $this->page = $form;
         $html       = $form->display();
@@ -470,6 +483,10 @@ class NDB_Caller
 
         $this->instrument = $instrument;
 
+        if (!self::isRequestMethodGet()) {
+            $success = $instrument->save();
+        }
+
         if (method_exists($instrument, 'getControlPanel')) {
             $this->controlPanel = $instrument->getControlPanel();
         }
@@ -479,9 +496,6 @@ class NDB_Caller
                 $_REQUEST['sessionID']
             );
         }
-
-        // save instrument form data
-        $success = $instrument->save();
 
         if ($redirectToOnSuccess !== null && $success !== false) {
             return "<script language='javascript'>"
