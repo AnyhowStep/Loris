@@ -47,13 +47,17 @@
 
     <h3>Visit Level QC</h3>
     <div class="visit-level-feedback">
-          <a class="btn btn-default" href="#"
-               onClick="javascript:open_popup('{$baseurl}/feedback_mri_popup.php?sessionID={$subject.sessionID}')">
-                 <span class="text-default">
-                     <span class="glyphicon glyphicon-pencil feedback-text"></span>
-                     <span class="hidden-xs feedback-text"> Visit Level Feedback</span>
-                 </span>
+        <a
+            class="btn btn-default"
+            href="#/"
+            onClick="let txt = $('#feedback-textarea'); txt.css('display', txt.css('display') == 'none' ? '' : 'none');"
+        >
+            <span class="text-default">
+                <span class="glyphicon glyphicon-pencil feedback-text"></span>
+                <span class="hidden-xs feedback-text"> Visit Level Feedback</span>
+            </span>
         </a>
+        <textarea id="feedback-textarea" style="display:none; min-width:80%; color:black;">Stuff</textarea>
      </div>
 
    <br>
