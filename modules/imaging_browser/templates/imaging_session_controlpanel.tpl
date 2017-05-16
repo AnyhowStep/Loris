@@ -57,7 +57,7 @@
                 <span class="hidden-xs feedback-text"> Visit Level Feedback</span>
             </span>
         </a>
-        <textarea id="feedback-textarea" style="display:none; min-width:80%; color:black;">Stuff</textarea>
+        <textarea id="feedback-textarea" style="display:none; min-width:80%; max-width:100%; color:black;">Stuff</textarea>
      </div>
 
    <br>
