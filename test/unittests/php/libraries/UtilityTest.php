@@ -5,6 +5,7 @@
     class UtilityTest extends TestCase {
         public function testHelloWorld () {
             $this->assertEquals("Hello, world!", "Hello, " . "world!");
+            $this->assertEquals(true, true);
         }
     }
 ?>
