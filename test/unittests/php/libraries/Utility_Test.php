@@ -38,7 +38,10 @@
             ]);
             
             $site_list = Utility::getSiteList(false);
-            $this->assertEquals($site_list, []);
+            $this->assertEquals($site_list, [
+                "1"=>"Data Coordinating Center",
+                "255"=>"Dummy"
+            ]);
             
         }
     }
