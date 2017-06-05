@@ -11,7 +11,7 @@
         </testsuite>
 
         <testsuite name='LorisCoreIntegrationTests'>
-            <directory>./integrationtests/</directory>
+            <!--<directory>./integrationtests/</directory>-->
         </testsuite>
 
         <testsuite name='LorisModuleIntegrationTests'>
