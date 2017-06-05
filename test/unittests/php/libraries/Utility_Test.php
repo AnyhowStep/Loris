@@ -2,6 +2,18 @@
     require_once __DIR__ . '/../../../../vendor/autoload.php';
 
     class Utility_Test extends PHPUnit_Framework_TestCase {
+        public static function setUpBeforeClass () {
+            $factory = NDB_Factory::singleton();
+            $factory->settings(__DIR__ . "/../../../config.xml");
+            
+            Database::singleton(
+                $factory->settings()->dbName(),
+                $factory->settings()->dbUserName(),
+                $factory->settings()->dbPassword(),
+                $factory->settings()->dbHost()
+            );
+        }
+        
         function test_calculateAge () {
             $age = Utility::calculateAge("2017-08-01", "2017-09-01");
             $this->assertEquals($age["year"], 0);
@@ -17,32 +29,55 @@
             }
         }
         function test_getSiteList () {
-            $factory = NDB_Factory::singleton();
-            $factory->settings(__DIR__ . "/../../../config.xml");
-            
-            Database::singleton(
-                $factory->settings()->dbName(),
-                $factory->settings()->dbUserName(),
-                $factory->settings()->dbPassword(),
-                $factory->settings()->dbHost()
-            );
-            
             $site_list = Utility::getSiteList();
             $this->assertEquals($site_list, [
-                "1"=>"Data Coordinating Center"
+                "1"=>"Data Coordinating Center",
+                "254"=>"A-STUDY-SITE"
             ]);
             
             $site_list = Utility::getSiteList(true);
             $this->assertEquals($site_list, [
-                "1"=>"Data Coordinating Center"
+                "1"=>"Data Coordinating Center",
+                "254"=>"A-STUDY-SITE"
             ]);
             
             $site_list = Utility::getSiteList(false);
             $this->assertEquals($site_list, [
                 "1"=>"Data Coordinating Center",
-                "255"=>"Dummy"
+                "255"=>"NOT-A-STUDY-SITE",
+                "254"=>"A-STUDY-SITE"
+            ]);
+        }
+        function test_getAssociativeSiteList () {
+            $site_list = Utility::getAssociativeSiteList();
+            $this->assertEquals($site_list, [
+                "1"=>"Data Coordinating Center",
+                "254"=>"A-STUDY-SITE"
             ]);
             
+            
+            $site_list = Utility::getAssociativeSiteList(true, true);
+            $this->assertEquals($site_list, [
+                "1"=>"Data Coordinating Center",
+                "254"=>"A-STUDY-SITE"
+            ]);
+            
+            $site_list = Utility::getAssociativeSiteList(true, false);
+            $this->assertEquals($site_list, [
+                "254"=>"A-STUDY-SITE"
+            ]);
+            
+            $site_list = Utility::getAssociativeSiteList(false, true);
+            $this->assertEquals($site_list, [
+                "1"=>"Data Coordinating Center",
+                "255"=>"NOT-A-STUDY-SITE",
+                "254"=>"A-STUDY-SITE"
+            ]);
+            $site_list = Utility::getAssociativeSiteList(false, false);
+            $this->assertEquals($site_list, [
+                "255"=>"NOT-A-STUDY-SITE",
+                "254"=>"A-STUDY-SITE"
+            ]);
         }
     }
 ?>
