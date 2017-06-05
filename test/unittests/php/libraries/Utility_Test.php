@@ -17,13 +17,13 @@
             }
         }
         function test_getSiteList () {
-            NDB_Factory::singleton()->settings(__DIR__ . "/../../../config.xml");
+            $factory = NDB_Factory::singleton()->settings(__DIR__ . "/../../../config.xml");
             
             Database::singleton(
-                $this->factory->settings()->dbName(),
-                $this->factory->settings()->dbUserName(),
-                $this->factory->settings()->dbPassword(),
-                $this->factory->settings()->dbHost()
+                $factory->settings()->dbName(),
+                $factory->settings()->dbUserName(),
+                $factory->settings()->dbPassword(),
+                $factory->settings()->dbHost()
             );
             
             $site_list = Utility::getSiteList();
