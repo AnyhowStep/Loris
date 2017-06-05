@@ -5,8 +5,8 @@
         colors="true">
     <testsuites>
         <testsuite name='LorisUnitTests'>
-            <directory>./unittests/</directory>
-            <directory>./unittests/api</directory>
+            <!--<directory>./unittests/</directory>
+            <directory>./unittests/api</directory>-->
             <directory>./unittests/php/libraries</directory>
         </testsuite>
 
