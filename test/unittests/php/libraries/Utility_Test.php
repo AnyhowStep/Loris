@@ -1,7 +1,7 @@
 <?php
     require_once __DIR__ . '/../../../../vendor/autoload.php';
 
-    class Utility_Test extends Loris_PHPUnit_Database_TestCase {
+    class Utility_Test extends PHPUnit_Framework_TestCase {
         function test_calculateAge () {
             $age = Utility::calculateAge("2017-08-01", "2017-09-01");
             $this->assertEquals($age["year"], 0);
@@ -17,7 +17,13 @@
             }
         }
         function test_getSiteList () {
-            $this->createLorisDBConnection();
+            $this->factory = NDB_Factory::singleton();
+            Database::singleton(
+                $this->factory->settings()->dbName(),
+                $this->factory->settings()->dbUserName(),
+                $this->factory->settings()->dbPassword(),
+                $this->factory->settings()->dbHost()
+            );
             
             $site_list = Utility::getSiteList();
             $this->assertEquals($site_list, []);
