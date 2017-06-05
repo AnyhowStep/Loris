@@ -16,5 +16,13 @@
                 $this->assertEquals($age["day"], 31-$i);
             }
         }
+        function test_getSiteList () {
+            $site_list = Utility::getSiteList();
+            $this->assertEquals($site_list, []);
+            $site_list = Utility::getSiteList(true);
+            $this->assertEquals($site_list, []);
+            $site_list = Utility::getSiteList(false);
+            $this->assertEquals($site_list, []);
+        }
     }
 ?>
