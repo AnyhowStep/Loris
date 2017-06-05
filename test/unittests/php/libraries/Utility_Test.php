@@ -17,7 +17,7 @@
             }
         }
         function test_getSiteList () {
-            $this->factory = NDB_Factory::singleton();
+            $this->factory = NDB_Factory::singleton("../../../config.xml");
             Database::singleton(
                 $this->factory->settings()->dbName(),
                 $this->factory->settings()->dbUserName(),
