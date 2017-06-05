@@ -28,11 +28,18 @@
             );
             
             $site_list = Utility::getSiteList();
-            $this->assertEquals($site_list, []);
+            $this->assertEquals($site_list, [
+                "1"=>"Data Coordinating Center"
+            ]);
+            
             $site_list = Utility::getSiteList(true);
-            $this->assertEquals($site_list, []);
+            $this->assertEquals($site_list, [
+                "1"=>"Data Coordinating Center"
+            ]);
+            
             $site_list = Utility::getSiteList(false);
             $this->assertEquals($site_list, []);
+            
         }
     }
 ?>
