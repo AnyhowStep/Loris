@@ -95,9 +95,12 @@
             Database::singleton()->insert("Visit_Windows", [
                 "Visit_label"=>"abc1"
             ]);
+            Database::singleton()->insert("Visit_Windows", [
+                "Visit_label"=>null
+            ]);
             
             $count = Database::singleton()->selectOne("SELECT COUNT(*) FROM Visit_Windows");
-            $this->assertEquals($count, 4);
+            $this->assertEquals($count, 5);
             
             $visit_list = Utility::getVisitList();
             $this->assertEquals($visit_list, [
@@ -105,6 +108,7 @@
                 "abc1"=>"Abc1",
                 "abc2"=>"Abc2",
                 "Abc3"=>"Abc3",
+                null=>null
             ]);
             
             Database::singleton()->prepare("DELETE FROM Visit_Windows")->execute();
