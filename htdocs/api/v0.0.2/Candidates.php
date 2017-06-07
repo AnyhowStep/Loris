@@ -30,12 +30,12 @@ class Candidates extends APIBase
     /**
      * Create a Candidates request handler
      *
-     * @param string $methof the HTTP request method of the request
+     * @param string $method the HTTP request method of the request
      * @param array  $data   The data that was POSTed to the request
      */
     public function __construct($method, $data=null)
     {
-        $this->AllowedMethods = [
+        $this->Allowedmethods = [
                                  'GET',
                                  'POST',
                                 ];
@@ -212,7 +212,7 @@ class Candidates extends APIBase
 }
 
 if (isset($_REQUEST['PrintCandidates'])) {
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if ($_SERVER['REQUEST_method'] === 'POST') {
         $fp   = fopen("php://input", "r");
         $data = '';
         while (!feof($fp)) {
@@ -220,9 +220,9 @@ if (isset($_REQUEST['PrintCandidates'])) {
         }
         fclose($fp);
 
-        $obj = new Candidates($_SERVER['REQUEST_METHOD'], json_decode($data, true));
+        $obj = new Candidates($_SERVER['REQUEST_method'], json_decode($data, true));
     } else {
-        $obj = new Candidates($_SERVER['REQUEST_METHOD']);
+        $obj = new Candidates($_SERVER['REQUEST_method']);
     }
     print $obj->toJSONString();
 }

@@ -30,7 +30,7 @@ class Candidates extends APIBase
     /**
      * Create a Candidates request handler
      *
-     * @param string $methof the HTTP request method of the request
+     * @param string $method the HTTP request method of the request
      * @param array  $data   The data that was POSTed to the request
      */
     public function __construct($method, $data=null)
