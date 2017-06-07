@@ -3,6 +3,8 @@
 
     class Utility_Test extends PHPUnit_Framework_TestCase {
         public static function setUpBeforeClass () {
+            exec("test/test-case-set-up.sh");
+            
             $factory = NDB_Factory::singleton();
             $factory->settings(__DIR__ . "/../../../config.xml");
             
@@ -12,7 +14,6 @@
                 $factory->settings()->dbPassword(),
                 $factory->settings()->dbHost()
             );
-            exec("test/test-case-set-up.sh");
         }
         public static function tearDownAfterClass () {
             exec("test/test-case-tear-down.sh");
