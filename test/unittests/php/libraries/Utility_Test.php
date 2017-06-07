@@ -3,8 +3,8 @@
 
     class Utility_Test extends PHPUnit_Framework_TestCase {
         public static function setUpBeforeClass () {
-            $output = [];
-            exec("test/test-case-set-up.sh", $output);
+            
+            $output = shell_exec("test/test-case-set-up.sh");
             var_dump($output);
             var_dump(exec("whoami"));
             var_dump(exec("pwd"));
