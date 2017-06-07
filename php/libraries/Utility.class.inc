@@ -203,29 +203,45 @@ class Utility
     /**
      * Get the list of sites as an associative array
      *
-     * @param boolean $study_site if true only return study sites from psc
-     *                            table
-     * @param boolean $DCC        Whether the DCC should be included or not
+     * @param boolean $study_site_only if true only return study sites from psc
+     *                                 table
+     * @param boolean $include_dcc     Whether the DCC should be included or not
      *
      * @return Associative array of the form CenterID => Site Name.
      *         Note that even though CenterID is numeric, the array
      *         should be interpreted as an associative array since the keys
      *         refer to the centerID, not the array index.
      */
-    static function getAssociativeSiteList($study_site = true, $DCC = true)
-    {
+    static function getAssociativeSiteList(
+        $study_site_only = true,
+        $include_dcc = true
+    ) {
         $DB =& Database::singleton();
 
         // get the list of study sites - to be replaced by the Site object
-        $query = "SELECT CenterID, Name FROM psc ";
-        if ($study_site) {
-            $query .= "WHERE Study_site='Y'";
-        }
-        if (!$DCC) {
-            $query .= " AND CenterID != 1";
-        }
+        $query = "
+            SELECT
+                CenterID, Name
+            FROM
+                psc
+            WHERE
+                (
+                    NOT :study_site_only OR
+                    Study_site = 'Y'
+                ) AND
+                (
+                    :include_dcc OR
+                    CenterID != 1
+                )
+        ";
 
-        $result = $DB->pselect($query, array());
+        $result = $DB->pselect(
+            $query,
+            array(
+             "study_site_only" => $study_site_only,
+             "include_dcc"     => $include_dcc,
+            )
+        );
 
         // fix the array
         $list = array();
