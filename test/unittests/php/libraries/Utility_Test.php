@@ -154,5 +154,9 @@
             
             $this->ensureDeleteAll("Project");
         }
+        function test_getSubprojectList () {
+            $subproject_list = Utility::getSubprojectList();
+            $this->assertEquals([], $subproject_list);
+        }
     }
 ?>
