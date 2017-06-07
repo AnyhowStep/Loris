@@ -1,1 +1,3 @@
-mysql -e 'SELECT * FROM information_schema.tables'
+mysql -e 'CREATE DATABASE LorisTest'
+mysql LorisTest < SQL/0000-00-00-schema.sql
+mysql -e 'SELECT * FROM LorisTest.users'
