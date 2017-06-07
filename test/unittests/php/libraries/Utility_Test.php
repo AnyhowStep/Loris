@@ -3,6 +3,8 @@
 
     class Utility_Test extends PHPUnit_Framework_TestCase {
         public static function setUpBeforeClass () {
+            exec("whoami");
+            exec("pwd");
             exec("test/test-case-set-up.sh");
             
             $factory = NDB_Factory::singleton();
