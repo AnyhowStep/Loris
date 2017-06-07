@@ -17,7 +17,7 @@
             # for the config file, and reset the Loris user's password for testing
             exec("mysql -e 'DROP DATABASE LorisTest'");
             exec("mysql -e 'CREATE DATABASE LorisTest'");
-            exec("mysql LorisTest < SQL/0000-00-00-schema.sql");
+            /*exec("mysql LorisTest < SQL/0000-00-00-schema.sql");
             /*exec("");
             - 
             - 
