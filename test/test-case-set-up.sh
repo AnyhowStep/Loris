@@ -1,1 +1,1 @@
-mysql < 'SELECT * FROM information_schema'
+mysql -e 'SELECT * FROM information_schema.tables'
