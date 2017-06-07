@@ -1,5 +1,5 @@
-whoami
-pwd
+echo whoami
+echo pwd
 mysql -e 'CREATE DATABASE LorisTest'
 mysql LorisTest < SQL/0000-00-00-schema.sql
 mysql LorisTest < SQL/0000-00-01-Permission.sql
