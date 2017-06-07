@@ -101,8 +101,8 @@
             
             $visit_list = Utility::getVisitList();
             $this->assertEquals($visit_list, [
-                "Abc0"=>"Abc0",
-                "Abc1"=>"Abc1",
+                "abc0"=>"Abc0",
+                "abc1"=>"Abc1",
                 "abc2"=>"Abc2",
                 "Abc3"=>"Abc3",
             ]);
@@ -113,8 +113,35 @@
             $this->assertEquals($count, 0);
         }
         function test_getProjectList () {
+            $count = Database::singleton()->selectOne("SELECT COUNT(*) FROM Project");
+            $this->assertEquals($count, 0);
+            
+            Database::singleton()->insert("Project", [
+                "Name"=>"THE FIRST"
+            ]);
+            Database::singleton()->insert("Project", [
+                "Name"=>"THE SECOND"
+            ]);
+            Database::singleton()->insert("Project", [
+                "Name"=>"DUPLICATE PROJECT NAME",
+            ]);
+            Database::singleton()->insert("Project", [
+                "Name"=>"DUPLICATE PROJECT NAME"
+            ]);
+            //NULL Values!
+            Database::singleton()->insert("Project", []);
+            
+            $count = Database::singleton()->selectOne("SELECT COUNT(*) FROM Project");
+            $this->assertEquals($count, 5);
+            
             $project_list = Utility::getProjectList();
-            $this->assertEquals($project_list, []);
+            $this->assertEquals($project_list, [
+                1=>"THE FIRST",
+                2=>"THE SECOND",
+                3=>"DUPLICATE PROJECT NAME",
+                4=>"DUPLICATE PROJECT NAME",
+                5=>null,
+            ]);
         }
     }
 ?>
