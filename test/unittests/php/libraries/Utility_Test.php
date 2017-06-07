@@ -6,6 +6,8 @@
             $output = [];
             exec("test/test-case-set-up.sh", $output);
             var_dump($output);
+            var_dump(exec("whoami"));
+            var_dump(exec("pwd"));
             
             $factory = NDB_Factory::singleton();
             $factory->settings(__DIR__ . "/../../../config.xml");
