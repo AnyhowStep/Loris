@@ -307,7 +307,7 @@ class Database
 
         // There is no where clause for an insert, so add a fake
         // one.
-        $this->_printQuery($query);var_dump($query);var_dump($prepQ);var_dump($exec_params);
+        $this->_printQuery($query);
         $prep   = $this->_PDO->prepare($prepQ);
         $result = $prep->execute($exec_params);
         if ($result === false) {

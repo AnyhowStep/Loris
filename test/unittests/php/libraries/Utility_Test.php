@@ -132,8 +132,9 @@
             Database::singleton()->insert("Project", [
                 "Name"=>"DUPLICATE PROJECT NAME"
             ]);
-            //NULL Values!
-            Database::singleton()->insert("Project", []);
+            //NULL Values! Since this is allowed in our DB schema as of
+            //2017-06-07
+            Database::singleton()->prepare("INSERT INTO Project () VALUES ()");
             
             $count = Database::singleton()->selectOne("SELECT COUNT(*) FROM Project");
             $this->assertEquals($count, 5);
