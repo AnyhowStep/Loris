@@ -3,7 +3,9 @@
 
     class Utility_Test extends PHPUnit_Framework_TestCase {
         public static function setUpBeforeClass () {
-            exec("test/test-case-set-up.sh");
+            $output = [];
+            exec("test/test-case-set-up.sh", $output);
+            var_dump($output);
             
             $factory = NDB_Factory::singleton();
             $factory->settings(__DIR__ . "/../../../config.xml");
