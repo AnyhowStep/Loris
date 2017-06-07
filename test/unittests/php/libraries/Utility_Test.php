@@ -13,6 +13,17 @@
                 $factory->settings()->dbHost()
             );
         }
+        public static function AssertTableCount ($table, $desired_count) {
+            $escaped_table = Database::singleton()->escape($table);
+            $count = Database::singleton()->pselectOne("SELECT COUNT(*) FROM {$escaped_table}");
+            $this->assertEquals($count, $desired_count);
+        }
+        public static function EnsureDeleteAll ($table) {
+            $escaped_table = Database::singleton()->escape($table);
+            Database::singleton()->prepare("DELETE FROM {$escaped_table}")->execute();
+            
+            self::AssertTableCount($table, 0);
+        }
         
         function test_calculateAge () {
             $age = Utility::calculateAge("2017-08-01", "2017-09-01");
@@ -80,8 +91,7 @@
             ]);
         }
         function test_getVisitList () {
-            $count = Database::singleton()->selectOne("SELECT COUNT(*) FROM Visit_Windows");
-            $this->assertEquals($count, 0);
+            self::AssertTableCount("Visit_Windows", 0);
             
             Database::singleton()->insert("Visit_Windows", [
                 "Visit_label"=>"abc2"
@@ -99,8 +109,7 @@
                 "Visit_label"=>null
             ]);
             
-            $count = Database::singleton()->selectOne("SELECT COUNT(*) FROM Visit_Windows");
-            $this->assertEquals($count, 5);
+            self::AssertTableCount("Visit_Windows", 5);
             
             $visit_list = Utility::getVisitList();
             $this->assertEquals($visit_list, [
@@ -111,14 +120,10 @@
                 null=>null
             ]);
             
-            Database::singleton()->prepare("DELETE FROM Visit_Windows")->execute();
-            
-            $count = Database::singleton()->selectOne("SELECT COUNT(*) FROM Visit_Windows");
-            $this->assertEquals($count, 0);
+            self::EnsureDeleteAll("Visit_Windows");
         }
         function test_getProjectList () {
-            $count = Database::singleton()->selectOne("SELECT COUNT(*) FROM Project");
-            $this->assertEquals($count, 0);
+            self::AssertTableCount("Project", 0);
             
             Database::singleton()->insert("Project", [
                 "Name"=>"THE FIRST"
@@ -136,8 +141,7 @@
             //2017-06-07
             Database::singleton()->prepare("INSERT INTO Project () VALUES ()");
             
-            $count = Database::singleton()->selectOne("SELECT COUNT(*) FROM Project");
-            $this->assertEquals($count, 5);
+            self::AssertTableCount("Project", 5);
             
             $project_list = Utility::getProjectList();
             $this->assertEquals($project_list, [
@@ -147,6 +151,8 @@
                 4=>"DUPLICATE PROJECT NAME",
                 5=>null,
             ]);
+            
+            self::EnsureDeleteAll("Project");
         }
     }
 ?>
