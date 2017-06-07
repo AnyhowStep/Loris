@@ -231,7 +231,7 @@ class Utility
                 ) AND
                 (
                     :include_dcc OR
-                    CenterID != 1
+                    CenterID <> 1
                 )
         ";
 
@@ -261,7 +261,7 @@ class Utility
     {
         $DB =& Database::singleton();
 
-        $query = "SELECT Visit_label from Visit_Windows ORDER BY Visit_label";
+        $query = "SELECT Visit_label from Visit_Windows";
 
         $result = $DB->pselect($query, array());
 

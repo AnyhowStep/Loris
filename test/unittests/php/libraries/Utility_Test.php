@@ -80,8 +80,37 @@
             ]);
         }
         function test_getVisitList () {
+            $count = Database::singleton()->selectOne("SELECT COUNT(*) FROM Visit_Windows");
+            $this->assertEquals($count, 0);
+            
+            Database::singleton()->insert("Visit_Windows", [
+                "Visit_label"=>"abc2"
+            ]);
+            Database::singleton()->insert("Visit_Windows", [
+                "Visit_label"=>"Abc3"
+            ]);
+            Database::singleton()->insert("Visit_Windows", [
+                "Visit_label"=>"abc0"
+            ]);
+            Database::singleton()->insert("Visit_Windows", [
+                "Visit_label"=>"abc1"
+            ]);
+            
+            $count = Database::singleton()->selectOne("SELECT COUNT(*) FROM Visit_Windows");
+            $this->assertEquals($count, 4);
+            
             $visit_list = Utility::getVisitList();
-            $this->assertEquals($visit_list, []);
+            $this->assertEquals($visit_list, [
+                "Abc0"=>"Abc0",
+                "Abc1"=>"Abc1",
+                "abc2"=>"Abc2",
+                "Abc3"=>"Abc3",
+            ]);
+            
+            Database::singleton()->prepare("DELETE FROM Visit_Windows")->execute();
+            
+            $count = Database::singleton()->selectOne("SELECT COUNT(*) FROM Visit_Windows");
+            $this->assertEquals($count, 0);
         }
         function test_getProjectList () {
             $project_list = Utility::getProjectList();
