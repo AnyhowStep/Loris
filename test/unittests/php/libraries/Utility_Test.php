@@ -128,22 +128,18 @@
             Database::singleton()->insert("Project", [
                 "Name"=>"THE FIRST"
             ]);
-            $this->assertTableCount("Project", 1);
             Database::singleton()->insert("Project", [
                 "Name"=>"THE SECOND"
             ]);
-            $this->assertTableCount("Project", 2);
             Database::singleton()->insert("Project", [
                 "Name"=>"DUPLICATE PROJECT NAME",
             ]);
-            $this->assertTableCount("Project", 3);
             Database::singleton()->insert("Project", [
                 "Name"=>"DUPLICATE PROJECT NAME"
             ]);
-            $this->assertTableCount("Project", 4);
             //NULL Values! Since this is allowed in our DB schema as of
             //2017-06-07
-            Database::singleton()->prepare("INSERT INTO Project () VALUES ()");
+            Database::singleton()->prepare("INSERT INTO Project () VALUES ()")->execute();
             
             $this->assertTableCount("Project", 5);
             
