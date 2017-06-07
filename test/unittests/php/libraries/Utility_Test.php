@@ -79,5 +79,13 @@
                 "254"=>"A-STUDY-SITE"
             ]);
         }
+        function test_getVisitList () {
+            $visit_list = Utility::getVisitList();
+            $this->assertEquals($visit_list, []);
+        }
+        function test_getProjectList () {
+            $project_list = Utility::getProjectList();
+            $this->assertEquals($project_list, []);
+        }
     }
 ?>
