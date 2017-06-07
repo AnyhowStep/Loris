@@ -15,7 +15,7 @@
         }
         public static function AssertTableCount ($table, $desired_count) {
             $escaped_table = Database::singleton()->escape($table);
-            $count = Database::singleton()->pselectOne("SELECT COUNT(*) FROM {$escaped_table}");
+            $count = Database::singleton()->pselectOne("SELECT COUNT(*) FROM {$escaped_table}", []);
             $this->assertEquals($count, $desired_count);
         }
         public static function EnsureDeleteAll ($table) {
