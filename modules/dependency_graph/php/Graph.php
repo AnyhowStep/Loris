@@ -86,6 +86,9 @@
         private $tli_arr;
         private $used_arr;
 
+        private $label;
+        private $group;
+
         public function __construct () {
 
         }
@@ -98,6 +101,10 @@
             $this->path = "SUPERGLOBAL/{$name}";
             $this->tli_arr = [$name];
             $this->used_arr = [];
+
+            $this->label = $name;
+            $this->group = "SUPERGLOBAL";
+
             return $this;
         }
         public function setPath (string $path) {
@@ -110,6 +117,11 @@
             $this->path = $path;
             $this->tli_arr = self::FindAllTopLevelIdentifiers($path);
             $this->used_arr = self::FindAllUsedIdentifiers($path);
+
+            $this->label = pathinfo($path, PATHINFO_FILENAME) .
+                "." . pathinfo($path, PATHINFO_EXTENSION);
+            $this->group = pathinfo($path, PATHINFO_DIRNAME);
+
             return $this;
         }
         public function getId () : int {
@@ -123,6 +135,12 @@
         }
         public function getUsedIdentifierArr () : array {
             return $this->used_arr;
+        }
+        public function getLabel () : string {
+            return $this->label;
+        }
+        public function getGroup () : string {
+            return $this->group;
         }
     }
     class Edge {
@@ -226,49 +244,4 @@
             }
         }
     }
-
-    $root = __DIR__ . "/../../../";
-    $extra_dir  = $extra_dir ?? [];
-    $directory_arr = [
-        //"htdocs",
-        //"modules",
-        //"php/libraries",
-        //"modules/data_team_helper"
-    ];
-    $directory_arr = array_merge($directory_arr, $extra_dir);
-
-    $g = new Graph();
-    foreach ($directory_arr as $directory) {
-        scanForNodes($g, "{$root}/{$directory}");
-    }
-    $g->addSuperGlobals();
-
-    $g->findEdges();
-    //echo "Nodes: " . count($g->getNodeArr()) . "\n";
-    //echo "Edges: " . count($g->getEdgeArr()) . "\n";
-
-    $node_arr = [];
-    foreach ($g->getNodeArr() as $n) {
-        $node_arr[] = (object)[
-            "path"=>$n->getPath(),
-            "id"=>$n->getId(),
-            "tli"=>$n->getTopLevelIdentifierArr(),
-            "used"=>$n->getUsedIdentifierArr()
-        ];
-        //if ($n->getPath)
-    }
-    $edge_arr = [];
-    foreach ($g->getEdgeArr() as $e) {
-        $edge_arr[] = (object)[
-            "from"=>$e->getFrom()->getId(),
-            "to"  =>$e->getTo()->getId()
-        ];
-    }
-    /*
-    echo "const node_arr = ";
-    echo json_encode($node_arr);
-    echo ";\n";
-    echo "const edge_arr = ";
-    echo json_encode($edge_arr);
-    echo ";\n";*/
 ?>
