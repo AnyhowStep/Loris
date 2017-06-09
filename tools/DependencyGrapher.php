@@ -65,6 +65,9 @@
                 if ($nme == "T_STRING") {
                     $result[] = $cur[1];
                 }
+                if ($nme == "T_VARIABLE") {
+                    $result[] = $cur[1];
+                }
             }
 
             return $result;
@@ -73,17 +76,35 @@
         private static $Id = 0;
 
         private $id;
-        private $path;
+        private $path = null;
         private $tli_arr;
         private $used_arr;
 
-        public function __construct (string $path) {
-            echo "creating node {$path}\n";
+        public function __construct () {
+
+        }
+        public function setSuperGlobal (string $name) {
+            if (!is_null($this->path)) {
+                throw new Exception("Already set");
+            }
+            ++self::$Id;
+            $this->id = self::$Id;
+            $this->path = "SUPERGLOBAL/{$name}";
+            $this->tli_arr = [$name];
+            $this->used_arr = [];
+            return $this;
+        }
+        public function setPath (string $path) {
+            if (!is_null($this->path)) {
+                throw new Exception("Already set");
+            }
+            //echo "creating node {$path}\n";
             ++self::$Id;
             $this->id = self::$Id;
             $this->path = $path;
             $this->tli_arr = self::FindAllTopLevelIdentifiers($path);
             $this->used_arr = self::FindAllUsedIdentifiers($path);
+            return $this;
         }
         public function getId () : int {
             return $this->id;
@@ -158,6 +179,20 @@
         public function getEdgeArr () : array {
             return $this->edge_arr;
         }
+
+        public function __construct () {
+        }
+        public function addSuperGlobals () {
+            $this->addNode((new Node())->setSuperGlobal('$GLOBALS'));
+            $this->addNode((new Node())->setSuperGlobal('$_SERVER'));
+            $this->addNode((new Node())->setSuperGlobal('$_GET'));
+            $this->addNode((new Node())->setSuperGlobal('$_POST'));
+            $this->addNode((new Node())->setSuperGlobal('$_FILES'));
+            $this->addNode((new Node())->setSuperGlobal('$_COOKIE'));
+            $this->addNode((new Node())->setSuperGlobal('$_SESSION'));
+            $this->addNode((new Node())->setSuperGlobal('$_REQUEST'));
+            $this->addNode((new Node())->setSuperGlobal('$_ENV'));
+        }
     }
     function scanForNodes (Graph $g, string $directory_path) {
         $name_arr = scandir($directory_path);
@@ -180,26 +215,31 @@
             } else {
                 $ext = pathinfo($path, PATHINFO_EXTENSION);
                 if ($ext == "inc" || $ext == "php") {
-                    $g->addNode(new Node($path));
+                    $g->addNode((new Node())->setPath($path));
                 }
             }
         }
     }
 
     $root = __DIR__ . "/../";
+    $extra_dir  = $extra_dir ?? [];
     $directory_arr = [
         //"htdocs",
-        "modules",
-        "php/libraries",
+        //"modules",
+        //"php/libraries",
         //"modules/data_team_helper"
     ];
+    $directory_arr = array_merge($directory_arr, $extra_dir);
+
     $g = new Graph();
     foreach ($directory_arr as $directory) {
         scanForNodes($g, "{$root}/{$directory}");
     }
+    $g->addSuperGlobals();
+
     $g->findEdges();
-    echo "Nodes: " . count($g->getNodeArr()) . "\n";
-    echo "Edges: " . count($g->getEdgeArr()) . "\n";
+    //echo "Nodes: " . count($g->getNodeArr()) . "\n";
+    //echo "Edges: " . count($g->getEdgeArr()) . "\n";
 
     $node_arr = [];
     foreach ($g->getNodeArr() as $n) {
@@ -216,11 +256,11 @@
             "to"  =>$e->getTo()->getId()
         ];
     }
-
+    /*
     echo "const node_arr = ";
     echo json_encode($node_arr);
     echo ";\n";
     echo "const edge_arr = ";
     echo json_encode($edge_arr);
-    echo ";\n";
+    echo ";\n";*/
 ?>
