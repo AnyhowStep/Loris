@@ -45,7 +45,7 @@
                     continue;
                 }
 
-                if ($nme == "T_CLASS" || $nme == "T_INTERFACE" || $nme == "T_FUNCTION") {
+            if ($nme == "T_CLASS" || $nme == "T_INTERFACE" /*|| $nme == "T_FUNCTION"*/) {
                     $identifier = self::FindNextIdentifier($tokens, $i+1);
                     if (!is_null($identifier))  {
                         $result[] = $identifier;

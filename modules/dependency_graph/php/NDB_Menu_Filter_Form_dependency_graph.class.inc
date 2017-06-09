@@ -63,7 +63,7 @@
                 if (node.value) {
                     node.value += 1;
                 } else {
-                    node.value = 2;
+                    node.value = 5;
                 }
                 if (node.label == "/$_POST") {
                     console.log(node);
