@@ -189,8 +189,9 @@
     $root = __DIR__ . "/../";
     $directory_arr = [
         //"htdocs",
-        //"modules",
-        "php/libraries"
+        "modules",
+        "php/libraries",
+        //"modules/data_team_helper"
     ];
     $g = new Graph();
     foreach ($directory_arr as $directory) {
