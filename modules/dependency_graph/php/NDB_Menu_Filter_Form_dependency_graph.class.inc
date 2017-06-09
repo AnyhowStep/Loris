@@ -4,21 +4,28 @@
     if (!isset($_GET["ignore_libraries"])) {
         $extra_dir[] = "php/libraries";
     }
-    $modules = $_GET["modules"] ?? [];
-    if (!is_array($modules)) {
-        $modules = [];
-    }
-    for ($i=0; $i<count($modules); ++$i) {
-        $cur = $modules[$i];
-        if (!is_string($cur)) {
-            throw new Exception("string expected for modules");
+
+    $modules = [];
+    if (isset($_GET["all_modules"])) {
+        $modules[] = "modules";
+    } else {
+        $modules = $_GET["modules"] ?? [];
+        if (!is_array($modules)) {
+            $modules = [];
         }
-        $cur = str_replace(".", "", $cur);
-        $cur = str_replace("/", "", $cur);
-        $modules[$i] = "modules/{$cur}";
+        for ($i=0; $i<count($modules); ++$i) {
+            $cur = $modules[$i];
+            if (!is_string($cur)) {
+                throw new Exception("string expected for modules");
+            }
+            $cur = str_replace(".", "", $cur);
+            $cur = str_replace("/", "", $cur);
+            $modules[$i] = "modules/{$cur}";
+        }
     }
+
     $extra_dir = array_merge($extra_dir, $modules);
-    require_once(__DIR__ . "/../../../tools/DependencyGrapher.php");
+    require_once(__DIR__ . "/Graph.php");
 ?>
 <html>
     <head>
@@ -44,31 +51,25 @@
         document.body.onload = function () {
             for (let i=0; i<node_arr.length; ++i) {
                 const node  = node_arr[i];
-                const slash = node.title.lastIndexOf("/");
-                node.label = node.title.substr(slash);
-                node.group = node.title.substr(0, slash);
+                const slash = node.path.lastIndexOf("/");
+                node.label = "#" + node.id + ": " + node.path.substr(slash);
+                node.group = node.path.substr(0, slash);
                 node.group = node.group.substr(node.group.lastIndexOf("/"));
-                console.log(node);
+                //console.log(node);
             }
             for (let i=0; i<edge_arr.length; ++i) {
                 const edge = edge_arr[i];
                 const node = node_arr[edge.to-1];
                 if (node.value) {
-                    ++node.inc_count;
-                    if (node.inc_count < 10) {
-                        node.value += (10 - node.inc_count);
-                    } else {
-                        node.value += 1;
-                    }
+                    node.value += 1;
                 } else {
-                    node.value = 10;
-                    node.inc_count = 0;
+                    node.value = 2;
                 }
-                if (edge.to == 25) {
+                if (node.label == "/$_POST") {
                     console.log(node);
                 }
             }
-            console.log(edge_arr.length);
+            //console.log(edge_arr.length);
             const container = document.getElementById("graph");
             const data = {
                 nodes: new vis.DataSet(node_arr),
