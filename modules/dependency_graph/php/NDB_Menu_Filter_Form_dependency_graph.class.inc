@@ -54,6 +54,14 @@
             }
         }
     }
+    $incoming_only = isset($_GET["incoming_only"]);
+    if ($incoming_only && is_null($focus_node)) {
+        throw new Exception("Cannot track incoming edges only for a node we cannot focus");
+    }
+    $outgoing_only = isset($_GET["outgoing_only"]);
+    if ($outgoing_only && is_null($focus_node)) {
+        throw new Exception("Cannot track outgoing edges only for a node we cannot focus");
+    }
 
     $node_set = [];
 
@@ -67,6 +75,12 @@
             if ($e->getFrom() != $focus_node && $e->getTo() != $focus_node) {
                 continue;
             }
+            if ($incoming_only && $e->getTo() != $focus_node) {
+                continue;
+            }
+            if ($outgoing_only && $e->getFrom() != $focus_node) {
+                continue;
+            }
         }
         $edge_arr[] = $edge;
         $node_set[$e->getFrom()->getId()] = $e->getFrom();
@@ -76,10 +90,11 @@
     foreach ($node_set as $id=>$n) {
         $node_set[$id] = (object)[
             "path"=>$n->getPath(),
+            "title"=>$n->getPath(),
             "id"=>$n->getId(),
             "tli"=>$n->getTopLevelIdentifierArr(),
             "used"=>$n->getUsedIdentifierArr(),
-            "label"=>$n->getLabel(),
+            "label"=>"#" . $n->getId() . ": " . $n->getLabel(),
             "group"=>$n->getGroup()
         ];
     }
