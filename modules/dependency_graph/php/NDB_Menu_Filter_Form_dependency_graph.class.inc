@@ -69,7 +69,9 @@
     foreach ($g->getEdgeArr() as $e) {
         $edge = (object)[
             "from"=>$e->getFrom()->getId(),
-            "to"  =>$e->getTo()->getId()
+            "to"  =>$e->getTo()->getId(),
+            "from_label"=>"#" . $e->getFrom()->getId() . ": " . $e->getFrom()->getLabel(),
+            "to_label"=>"#" . $e->getTo()->getId() . ": " . $e->getTo()->getLabel()
         ];
         if (!is_null($focus_node)) {
             if ($e->getFrom() != $focus_node && $e->getTo() != $focus_node) {
@@ -110,6 +112,9 @@
     <head>
         <script>
             <?php
+                echo "const root = ";
+                echo json_encode($root);
+                echo ";\n";
                 echo "const node_set = ";
                 echo json_encode($node_set);
                 echo ";\n";
@@ -123,6 +128,19 @@
         <link rel="stylesheet" type="title/css" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.0/vis.min.css"/>
     </head>
     <body style="background-color:black;">
+        <div id="info" style="display:none; position:fixed; z-index:1000; width:100%; height:100%; background-color:white; opacity:0.5; overflow: auto;">
+            <a href="#" onclick="document.getElementById('info').style.display = 'none';">Close</a>
+            <h3 id="title"></h3>
+            <h4>Top Level Identifiers</h4>
+            <ul id="tli">
+            </ul>
+            <h4>Depends On</h4>
+            <ul id="depends_on">
+            </ul>
+            <h4>Depended By</h4>
+            <ul id="depended_by">
+            </ul>
+        </div>
         <div id="graph">
         </div>
     </body>
@@ -136,7 +154,7 @@
                 } else {
                     node.value = 5;
                 }
-                if (node.label == "/$_POST") {
+                if (node.label == "$_POST") {
                     console.log(node);
                 }
             }
@@ -197,6 +215,56 @@
                 options.physics.enabled = false;
                 network.setOptions(options);
             }, Object.keys(node_set).length * 500);
+
+            network.on("click", function (obj) {
+                if (obj.nodes.length != 1) {
+                    return;
+                }
+                const node_id = obj.nodes[0];
+                const n = node_set[node_id];
+                console.log(n);
+                document.getElementById("info").style.display = "block";
+                document.getElementById("title").innerHTML = n.title.replace(root, "");
+                const tli = document.getElementById("tli");
+                while (tli.firstChild) {
+                    tli.removeChild(tli.firstChild);
+                }
+                for (let i=0; i<n.tli.length; ++i) {
+                    const li = document.createElement("li");
+                    li.innerHTML = n.tli[i];
+                    tli.appendChild(li);
+                }
+                const depends_on = document.getElementById("depends_on");
+                while (depends_on.firstChild) {
+                    depends_on.removeChild(depends_on.firstChild);
+                }
+                const depended_by = document.getElementById("depended_by");
+                while (depended_by.firstChild) {
+                    depended_by.removeChild(depended_by.firstChild);
+                }
+                const from = {};
+                const to   = {};
+                for (let i=0; i<edge_arr.length; ++i) {
+                    const e = edge_arr[i];
+                    if (e.from == node_id) {
+                        if (to[e.to]) {
+                            continue;
+                        }
+                        to[e.to] = true;
+                        const li = document.createElement("li");
+                        li.innerHTML = e.to_label;
+                        depends_on.appendChild(li);
+                    } else if (e.to == node_id) {
+                        if (from[e.from]) {
+                            continue;
+                        }
+                        from[e.from] = true;
+                        const li = document.createElement("li");
+                        li.innerHTML = e.from_label;
+                        depended_by.appendChild(li);
+                    }
+                }
+            });
         };
     </script>
 </html>
