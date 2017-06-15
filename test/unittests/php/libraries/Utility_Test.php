@@ -280,7 +280,59 @@
             $this->ensureDeleteAll("project_rel");
         }
         function test_getTestNameByCommentID () {
+            $this->assertTableCount("user", 1);
             $this->assertTableCount("test_names", 1);
+            $this->assertTableCount("psc", 1);
+            $this->assertTableCount("candidate", 0);
+            $this->assertTableCount("session", 0);
+            $this->assertTableCount("flag", 0);
+
+            Database::singleton()->insert("candidate", [
+                "ID"=>1337,
+                "CandID"=>69,
+                "PSCID"=>1,
+                "UserID"=>1
+            ]);
+            Database::singleton()->insert("session", [
+                "ID"=>9999,
+                "CandID"=>69,
+                "CenterID"=>1,
+                "MRIQCStatus"=>""
+            ]);
+            Database::singleton()->insert("flag", [
+                "ID"=>80085,
+                "SessionID"=>9999,
+                "Test_name"=>"testtest",
+                "CommentID"=>"TEST-COMMENT-ID"
+            ]);
+            $this->assertTableCount("user", 1);
+            $this->assertTableCount("test_names", 1);
+            $this->assertTableCount("psc", 1);
+            $this->assertTableCount("candidate", 1);
+            $this->assertTableCount("session", 1);
+            $this->assertTableCount("flag", 1);
+
+            $str = Utility::getTestNameByCommentID("TEST-COMMENT-ID");
+            $this->assertEquals("testtest", $str);
+
+            $empty_array = Utility::getTestNameByCommentID("DOES-NOT-EXIST");
+            $this->assertEquals([], $empty_array);
+
+            Database::singleton()->delete("flag", [
+                "ID"=>80085
+            ]);
+            Database::singleton()->delete("session", [
+                "ID"=>9999
+            ]);
+            Database::singleton()->delete("candidate", [
+                "ID"=>1337
+            ]);
+
+            $this->assertTableCount("user", 1);
+            $this->assertTableCount("test_names", 1);
+            $this->assertTableCount("psc", 1);
+            $this->assertTableCount("candidate", 0);
+            $this->assertTableCount("session", 0);
             $this->assertTableCount("flag", 0);
         }
     }
