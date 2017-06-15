@@ -280,6 +280,7 @@
             $this->ensureDeleteAll("project_rel");
         }
         function test_getTestNameByCommentID () {
+            $this->assertTableCount("test_names", 0);
             $this->assertTableCount("flag", 0);
         }
     }
