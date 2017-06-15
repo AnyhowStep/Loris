@@ -1,1 +1,0 @@
-mysql -e 'DROP DATABASE LorisTest'
