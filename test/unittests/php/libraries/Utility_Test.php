@@ -290,8 +290,9 @@
             Database::singleton()->insert("candidate", [
                 "ID"=>1337,
                 "CandID"=>69,
-                "PSCID"=>1,
-                "UserID"=>1
+                "PSCID"=>"TEMPORARY-PSCID",
+                "UserID"=>1,
+                "CenterID"=>1
             ]);
             Database::singleton()->insert("session", [
                 "ID"=>9999,
