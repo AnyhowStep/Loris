@@ -280,7 +280,7 @@
             $this->ensureDeleteAll("project_rel");
         }
         function test_getTestNameByCommentID () {
-            $this->assertTableCount("user", 1);
+            $this->assertTableCount("users", 1);
             $this->assertTableCount("test_names", 1);
             $this->assertTableCount("psc", 1);
             $this->assertTableCount("candidate", 0);
@@ -305,7 +305,7 @@
                 "Test_name"=>"testtest",
                 "CommentID"=>"TEST-COMMENT-ID"
             ]);
-            $this->assertTableCount("user", 1);
+            $this->assertTableCount("users", 1);
             $this->assertTableCount("test_names", 1);
             $this->assertTableCount("psc", 1);
             $this->assertTableCount("candidate", 1);
@@ -328,7 +328,7 @@
                 "ID"=>1337
             ]);
 
-            $this->assertTableCount("user", 1);
+            $this->assertTableCount("users", 1);
             $this->assertTableCount("test_names", 1);
             $this->assertTableCount("psc", 1);
             $this->assertTableCount("candidate", 0);
