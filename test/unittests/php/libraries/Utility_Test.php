@@ -158,8 +158,39 @@
             $this->ensureDeleteAll("Project");
         }
         function test_getSubprojectList () {
+            $this->assertTableCount("subproject", 2);
+
             $subproject_list = Utility::getSubprojectList();
-            $this->assertEquals([], $subproject_list);
+            $this->assertEquals([
+                1=>"Control",
+                2=>"Experimental"
+            ], $subproject_list);
+
+            $this->assertTableCount("Project", 0);
+
+            Database::singleton()->insert("Project", [
+                "ProjectID"=>9001,
+                "Name"=>"PROJECT 9001"
+            ]);
+
+            $this->assertTableCount("Project", 1);
+
+            $this->assertTableCount("Project_rel", 0);
+
+            Database::singleton()->insert("Project_rel", [
+                "ProjectID"=>9001,
+                "SubprojectID"=>2
+            ]);
+
+            $this->assertTableCount("Project_rel", 1);
+
+            $subproject_list = Utility::getSubprojectList(9001);
+            $this->assertEquals([
+                2=>"Experimental"
+            ], $subproject_list);
+
+            $this->ensureDeleteAll("Project");
+            $this->ensureDeleteAll("Project_rel");
         }
     }
 ?>
