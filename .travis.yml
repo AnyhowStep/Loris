@@ -89,8 +89,8 @@ before_script:
  # - "LORIS_DB_CONFIG=test/config.xml"
 
 script:
-    - npm run lint:php
-    - npm run lint:javascript
+    #- npm run lint:php
+    #- npm run lint:javascript
 
     # Run unit tests to make sure functions still do what they should.
     - vendor/bin/phpunit --configuration test/phpunit.xml
