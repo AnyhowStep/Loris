@@ -227,12 +227,12 @@
 
             $this->assertTableCount("Project_rel", 0);
 
-            Database::singleton()->insert("Project_rel", [
+            Database::singleton()->insert("project_rel", [
                 "ProjectID"=>9001,
                 "SubprojectID"=>2
             ]);
 
-            $this->assertTableCount("Project_rel", 1);
+            $this->assertTableCount("project_rel", 1);
 
             $subproject_list = Utility::getSubprojectList(9001);
             $this->assertEquals([
@@ -240,7 +240,7 @@
             ], $subproject_list);
 
             $this->ensureDeleteAll("Project");
-            $this->ensureDeleteAll("Project_rel");
+            $this->ensureDeleteAll("project_rel");
         }
         //As of this writing, getSubprojectsForProject() is a wrapper for getSubprojectList()
         //Therefore, the tests are duplicated with getSubprojectsForProject() being called instead
@@ -278,6 +278,9 @@
 
             $this->ensureDeleteAll("Project");
             $this->ensureDeleteAll("Project_rel");
+        }
+        function test_getTestNameByCommentID () {
+            $this->assertTableCount("flag", 0);
         }
     }
 ?>
