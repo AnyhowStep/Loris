@@ -316,6 +316,9 @@
             $str = Utility::getTestNameByCommentID("TEST-COMMENT-ID");
             $this->assertEquals("testtest", $str);
 
+            //Yes, I understand that the above is a string...
+            //And that the below is an empty array...
+            //But, such is the behaviour of the Loris code base
             $empty_array = Utility::getTestNameByCommentID("DOES-NOT-EXIST");
             $this->assertEquals([], $empty_array);
 
