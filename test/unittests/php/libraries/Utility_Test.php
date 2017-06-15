@@ -42,7 +42,48 @@
                 $this->assertEquals(31-$i, $age["day"]);
             }
         }
+
+        private function setUpDummySites () {
+            //Should only have DCC
+            $this->assertTableCount("psc", 1);
+
+            Database::singleton()->insert("psc", [
+                "CenterID"=>254,
+                "Name"=>"A-STUDY-SITE",
+                "Study_site"=>"Y"
+            ]);
+            Database::singleton()->insert("psc", [
+                "CenterID"=>255,
+                "Name"=>"NOT-A-STUDY-SITE",
+                "Study_site"=>"N"
+            ]);
+            //As of this writing, NULL for Study_site is valid...
+            Database::singleton()->insert("psc", [
+                "CenterID"=>253,
+                "Name"=>"NULL-STUDY-SITE",
+                "Study_site"=>null
+            ]);
+
+            $this->assertTableCount("psc", 4);
+        }
+        private function tearDownDummySites () {
+            $this->assertTableCount("psc", 4);
+
+            Database::singleton()->delete("psc", [
+                "CenterID"=>253
+            ]);
+            Database::singleton()->delete("psc", [
+                "CenterID"=>254
+            ]);
+            Database::singleton()->delete("psc", [
+                "CenterID"=>255
+            ]);
+
+            $this->assertTableCount("psc", 1);
+        }
         function test_getSiteList () {
+            $this->setUpDummySites();
+
             $site_list = Utility::getSiteList();
             $this->assertEquals([
                 "1"=>"Data Coordinating Center",
@@ -59,10 +100,15 @@
             $this->assertEquals([
                 "1"=>"Data Coordinating Center",
                 "255"=>"NOT-A-STUDY-SITE",
-                "254"=>"A-STUDY-SITE"
+                "254"=>"A-STUDY-SITE",
+                "253"=>"NULL-STUDY-SITE"
             ], $site_list);
+
+            $this->tearDownDummySites();
         }
         function test_getAssociativeSiteList () {
+            $this->setUpDummySites();
+
             $site_list = Utility::getAssociativeSiteList();
             $this->assertEquals([
                 "1"=>"Data Coordinating Center",
@@ -85,13 +131,17 @@
             $this->assertEquals([
                 "1"=>"Data Coordinating Center",
                 "255"=>"NOT-A-STUDY-SITE",
-                "254"=>"A-STUDY-SITE"
+                "254"=>"A-STUDY-SITE",
+                "253"=>"NULL-STUDY-SITE"
             ], $site_list);
             $site_list = Utility::getAssociativeSiteList(false, false);
             $this->assertEquals([
                 "255"=>"NOT-A-STUDY-SITE",
-                "254"=>"A-STUDY-SITE"
+                "254"=>"A-STUDY-SITE",
+                "253"=>"NULL-STUDY-SITE"
             ], $site_list);
+
+            $this->tearDownDummySites();
         }
         function test_getVisitList () {
             $this->assertTableCount("Visit_Windows", 0);
@@ -185,6 +235,43 @@
             $this->assertTableCount("Project_rel", 1);
 
             $subproject_list = Utility::getSubprojectList(9001);
+            $this->assertEquals([
+                2=>"Experimental"
+            ], $subproject_list);
+
+            $this->ensureDeleteAll("Project");
+            $this->ensureDeleteAll("Project_rel");
+        }
+        //As of this writing, getSubprojectsForProject() is a wrapper for getSubprojectList()
+        //Therefore, the tests are duplicated with getSubprojectsForProject() being called instead
+        function test_getSubprojectsForProject () {
+            $this->assertTableCount("subproject", 2);
+
+            $subproject_list = Utility::getSubprojectsForProject();
+            $this->assertEquals([
+                1=>"Control",
+                2=>"Experimental"
+            ], $subproject_list);
+
+            $this->assertTableCount("Project", 0);
+
+            Database::singleton()->insert("Project", [
+                "ProjectID"=>9001,
+                "Name"=>"PROJECT 9001"
+            ]);
+
+            $this->assertTableCount("Project", 1);
+
+            $this->assertTableCount("Project_rel", 0);
+
+            Database::singleton()->insert("Project_rel", [
+                "ProjectID"=>9001,
+                "SubprojectID"=>2
+            ]);
+
+            $this->assertTableCount("Project_rel", 1);
+
+            $subproject_list = Utility::getSubprojectsForProject(9001);
             $this->assertEquals([
                 2=>"Experimental"
             ], $subproject_list);
