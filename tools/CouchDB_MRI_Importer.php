@@ -266,7 +266,7 @@ class CouchDBMRIImporter
                 = $mri_feedback->getMRIValue($field);
             // overall comment field for each CommentTypeID
             $CandidateData["Comment_".$field."_".$scan_type] = '';
-            // set deafault for all the predefined comments as well
+            // set default for all the predefined comments as well
             $predefn = $this->feedback_PreDefinedComments[$CommentTypeID];
             foreach ($predefn as $id=>$key) {
                 $CandidateData[$key."_".$scan_type] = 'No'; //no is default
@@ -322,9 +322,6 @@ class CouchDBMRIImporter
                 )
             );
             print $docid . ": " . $success . "\n";
-
-            $config = NDB_Config::singleton();
-            $paths  = $config->getSetting('paths');
 
         }
         return;
