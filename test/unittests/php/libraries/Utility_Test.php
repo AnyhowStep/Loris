@@ -280,6 +280,8 @@
             $this->ensureDeleteAll("project_rel");
         }
         function test_getTestNameByCommentID () {
+            $arr = Database::singleton()->pselect("SELECT * FROM test_names", []);
+            $this->assertEquals([], $arr);
             $this->assertTableCount("test_names", 0);
             $this->assertTableCount("flag", 0);
         }
