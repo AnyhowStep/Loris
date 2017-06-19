@@ -479,7 +479,34 @@
             ], $arr);
         }
         function test_getAllInstruments () {
-            $this->assertEquals([], Utility::getAllInstruments());
+            $this->assertEquals([
+                "testtest"=>"testtest"
+            ], Utility::getAllInstruments());
+        }
+        function test_getAllDDEInstruments () {
+            $this->assertEquals([], Utility::getAllDDEInstruments());
+        }
+        function test_getDirectInstruments () {
+            $this->assertEquals([], Utility::getDirectInstruments());
+        }
+        function test_getScoredInstruments () {
+            $this->assertEquals([], Utility::getScoredInstruments());
+        }
+        function test_getScoreColsForInstrument () {
+            //TODO
+        }
+        function test_columnsHasNull () {
+            //TODO
+        }
+        function test_getStageUsingCandID () {
+            //TODO
+
+        }
+        function test_getSubprojectIDUsingCandID () {
+            //TODO
+        }
+        function test_getTestNameUsingFullName () {
+            //TODO
         }
     }
 ?>
