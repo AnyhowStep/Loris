@@ -343,12 +343,22 @@
             //The method is really badly named.
             //And I have no idea what would be a good name for it.
             //Its existence is a code smell
+
+            //This is not an array, so, it will not be modified
             $arr = Utility::toArray(1);
             $this->assertEquals(1, $arr);
 
+            $arr = Utility::toArray(null);
+            $this->assertEquals(null, $arr);
+
+            //This is an empty array, so, [0] does not exist
+            //It will be "wrapped" into a singleton-array
+            //Using singleton here to mean "a set of one element"
             $arr = Utility::toArray([]);
             $this->assertEquals([[]], $arr);
 
+            //This is an associative array
+            //It will become a singleton
             $arr = Utility::toArray([
                 "Test" => 1337
             ]);
@@ -358,6 +368,8 @@
                 ]
             ], $arr);
 
+            //This is, technically, associative, because it doesn't start from
+            //zero
             $arr = Utility::toArray([
                 1 => 1337
             ]);
@@ -367,17 +379,107 @@
                 ]
             ], $arr);
 
+            //This is fine and will come out unmodified
             $arr = Utility::toArray([1337]);
             $this->assertEquals([1337], $arr);
 
+            //This will come out unmodified simply because [0] is set
+            //I know, unintuitive. But, such is the way it works right now
             $arr = Utility::toArray([
-                0 => 1337
+                0 => 1337,
+                3 => 99
             ]);
             $this->assertEquals([
-                [
-                    0 => 1337
-                ]
+                0 => 1337,
+                3 => 99
             ], $arr);
+        }
+        function test_asArray () {
+            //The method is really badly named.
+            //And I have no idea what would be a good name for it.
+            //Its existence is a code smell
+            //Maybe "singletonIfNotArray" or something like that.
+            //I'm using the word singleton here to mean "a set of one element"
+
+            $arr = Utility::asArray(1);
+            $this->assertEquals([1], $arr);
+
+            $arr = Utility::asArray(null);
+            $this->assertEquals([null], $arr);
+
+            $arr = Utility::asArray([]);
+            $this->assertEquals([], $arr);
+
+            $arr = Utility::asArray([
+                "Test" => 1337
+            ]);
+            $this->assertEquals([
+                "Test" => 1337
+            ], $arr);
+
+            $arr = Utility::asArray([
+                1 => 1337
+            ]);
+            $this->assertEquals([
+                1 => 1337
+            ], $arr);
+
+            $arr = Utility::asArray([1337]);
+            $this->assertEquals([1337], $arr);
+
+            $arr = Utility::asArray([
+                0 => 1337,
+                3 => 99
+            ]);
+            $this->assertEquals([
+                0 => 1337,
+                3 => 99
+            ], $arr);
+        }
+        function test_nullifyEmpty () {
+            $arr = [];
+            $field = "";
+            Utility::nullifyEmpty($arr, $field);
+            $this->assertEquals([], $arr);
+
+            $arr = [
+                "test"=>999
+            ];
+            $field = "test";
+            Utility::nullifyEmpty($arr, $field);
+            $this->assertEquals([
+                "test"=>999
+            ], $arr);
+
+            $arr = [
+                "test"=>''
+            ];
+            $field = "test";
+            Utility::nullifyEmpty($arr, $field);
+            $this->assertEquals([
+                "test"=>null
+            ], $arr);
+
+            $arr = [
+                "test"=>[]
+            ];
+            $field = "test";
+            Utility::nullifyEmpty($arr, $field);
+            $this->assertEquals([
+                "test"=>[]
+            ], $arr);
+
+            $arr = [
+                "test"=>''
+            ];
+            $field = "qwerty";
+            Utility::nullifyEmpty($arr, $field);
+            $this->assertEquals([
+                "test"=>''
+            ], $arr);
+        }
+        function test_getAllInstruments () {
+            $this->assertEquals([], Utility::getAllInstruments());
         }
     }
 ?>
