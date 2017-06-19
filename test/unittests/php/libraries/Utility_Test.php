@@ -339,5 +339,45 @@
             $this->assertTableCount("session", 0);
             $this->assertTableCount("flag", 0);
         }
+        function test_toArray () {
+            //The method is really badly named.
+            //And I have no idea what would be a good name for it.
+            //Its existence is a code smell
+            $arr = Utility::toArray(1);
+            $this->assertEquals(1, $arr);
+
+            $arr = Utility::toArray([]);
+            $this->assertEquals([[]], $arr);
+
+            $arr = Utility::toArray([
+                "Test" => 1337
+            ]);
+            $this->assertEquals([
+                [
+                    "Test" => 1337
+                ]
+            ], $arr);
+
+            $arr = Utility::toArray([
+                1 => 1337
+            ]);
+            $this->assertEquals([
+                [
+                    1 => 1337
+                ]
+            ], $arr);
+
+            $arr = Utility::toArray([1337]);
+            $this->assertEquals([1337], $arr);
+
+            $arr = Utility::toArray([
+                0 => 1337
+            ]);
+            $this->assertEquals([
+                [
+                    0 => 1337
+                ]
+            ], $arr);
+        }
     }
 ?>
