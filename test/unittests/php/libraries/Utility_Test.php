@@ -493,14 +493,20 @@
             $this->assertEquals([], Utility::getScoredInstruments());
         }
         function test_getScoreColsForInstrument () {
-            //TODO
+            $this->assertEquals(
+                "gonna fail",
+                Utility::getScoreColsForInstrument("testtest")
+            );
         }
         function test_columnsHasNull () {
-            //TODO
-        }
-        function test_getStageUsingCandID () {
-            //TODO
-
+            $this->assertEquals(
+                false,
+                Utility::columnsHasNull("users", "UserID")
+            );
+            $this->assertEquals(
+                true,
+                Utility::columnsHasNull("users", "Password")
+            );
         }
         function test_getSubprojectIDUsingCandID () {
             //TODO
@@ -509,6 +515,24 @@
             //TODO
         }
         function test_getSourcefields () {
+            //TODO
+        }
+        function test_getExistingVisitLabels () {
+            //TODO
+        }
+        function test_getVisitInstruments () {
+            //TODO
+        }
+        function test_numericArray () {
+            //TODO
+        }
+        function test_removeCommonAffix () {
+            //TODO
+        }
+        function test_arrayToCSV () {
+            //TODO
+        }
+        function test__checkDate () {
             //TODO
         }
     }
