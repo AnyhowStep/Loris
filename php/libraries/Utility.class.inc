@@ -26,13 +26,6 @@
 class Utility
 {
     /**
-     * Stops anyone from instantiating an instance of Utility
-     */
-    private function __construct()
-    {
-    }
-
-    /**
      * This is identical to PEAR::isError from PEAR only the function
      * has the static keyword. This is required because PEAR::isError
      * being called staticly throws a warning in newer versions of PHP
@@ -59,15 +52,13 @@ class Utility
      *
      * @param array $array The multi-dimensional array
      *
-     * @return string
-     *
-     * @deprecated
+     * @return  string
+     * @cleanup Determine if this is still used.
      */
     static function reduce($array)
     {
-        throw new DeprecatedException(
-            "Utility::reduce has been deprecated."
-        );
+        $string = array_reduce($array, array('Utility', 'crunch'));
+        return (!empty($string)) ? explode('`', $string) : array();
     }
 
 
@@ -79,15 +70,14 @@ class Utility
      *
      * @note If any element of the array contains a backtick, you'll run into trouble
      *
-     * @return string
-     *
-     * @deprecated
+     * @return  string
+     * @cleanup Determine if this is still used.
      */
     static function crunch($x, $y)
     {
-        throw new DeprecatedException(
-            "Utility::crunch has been deprecated."
-        );
+        $a = (is_array($x)) ? array_reduce($x, array('Utility', 'crunch')) : $x;
+        $b = (is_array($y)) ? array_reduce($y, array('Utility', 'crunch')) : $y;
+        return (!empty($a)) ? "$a`$b" : $b;
     }
 
 
@@ -159,7 +149,7 @@ class Utility
      * @note    This is no longer used and should be removed
      * @cleanup
      */
-    static function getListOfSubjectEthnicities()
+    function getListOfSubjectEthnicities()
     {
         $DB =& Database::singleton();
 
@@ -213,29 +203,45 @@ class Utility
     /**
      * Get the list of sites as an associative array
      *
-     * @param boolean $study_site if true only return study sites from psc
-     *                            table
-     * @param boolean $DCC        Whether the DCC should be included or not
+     * @param boolean $study_site_only if true only return study sites from psc
+     *                                 table
+     * @param boolean $include_dcc     Whether the DCC should be included or not
      *
      * @return Associative array of the form CenterID => Site Name.
      *         Note that even though CenterID is numeric, the array
      *         should be interpreted as an associative array since the keys
      *         refer to the centerID, not the array index.
      */
-    static function getAssociativeSiteList($study_site = true, $DCC = true)
-    {
+    static function getAssociativeSiteList(
+        $study_site_only = true,
+        $include_dcc = true
+    ) {
         $DB =& Database::singleton();
 
         // get the list of study sites - to be replaced by the Site object
-        $query = "SELECT CenterID, Name FROM psc ";
-        if ($study_site) {
-            $query .= "WHERE Study_site='Y'";
-        }
-        if (!$DCC) {
-            $query .= " AND Name != 'DCC'";
-        }
+        $query = "
+            SELECT
+                CenterID, Name
+            FROM
+                psc
+            WHERE
+                (
+                    NOT :study_site_only OR
+                    Study_site = 'Y'
+                ) AND
+                (
+                    :include_dcc OR
+                    CenterID <> 1
+                )
+        ";
 
-        $result = $DB->pselect($query, array());
+        $result = $DB->pselect(
+            $query,
+            array(
+             "study_site_only" => $study_site_only,
+             "include_dcc"     => $include_dcc,
+            )
+        );
 
         // fix the array
         $list = array();
@@ -255,7 +261,7 @@ class Utility
     {
         $DB =& Database::singleton();
 
-        $query = "SELECT Visit_label from Visit_Windows ORDER BY Visit_label";
+        $query = "SELECT Visit_label from Visit_Windows";
 
         $result = $DB->pselect($query, array());
 
@@ -589,7 +595,7 @@ class Utility
      *       by NDB_Form_candidate_parameters and if so, should be moved there.
      * @cleanup
      */
-    static function explodeEncapsulated($seperator, $delimiter, $string)
+    function explodeEncapsulated($seperator, $delimiter, $string)
     {
         $state        =0;
         $output       =$string;
@@ -630,7 +636,7 @@ class Utility
      * @note    This function does not appear to be used anymore.
      * @cleanup
      */
-    static function arrayMergeKeepKeys()
+    function arrayMergeKeepKeys()
     {
         $arg_list = func_get_args();
         foreach ((array)$arg_list as $arg) {
@@ -692,7 +698,7 @@ class Utility
      * @note    Function should be removed and code using it cleaned up.
      * @cleanup
      */
-    static function flatten($Arr)
+    function flatten($Arr)
     {
         return $Arr['Test_name'];
     }
@@ -720,7 +726,7 @@ class Utility
      * @note    Function should be removed and code using it cleaned up.
      * @cleanup
      */
-    static function flattenFull($Arr)
+    function flattenFull($Arr)
     {
         return $Arr['Full_name'];
     }
@@ -933,6 +939,10 @@ class Utility
      */
     static function getStageUsingCandID($Cand_id)
     {
+        /*throw new LorisException(
+            "Utility::getStageUsingCandID() has been deprecated"
+            . "Use TimePoint::getCurrentStage() instead"
+        );*/
         $db    =& Database::singleton();
         $query = "select DISTINCT Current_stage from session where ".
             "CandID = :Cand_id";
@@ -1256,7 +1266,7 @@ class Utility
      *
      * @return True if the date is invalid, false if it's valid.
      */
-    static function _checkDate($dateElement)
+    function _checkDate($dateElement)
     {
         if (empty($dateElement['M'])
             && empty($dateElement['d'])
