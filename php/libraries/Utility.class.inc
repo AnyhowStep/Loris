@@ -939,15 +939,10 @@ class Utility
      */
     static function getStageUsingCandID($Cand_id)
     {
-        /*throw new LorisException(
+        throw new LorisException(
             "Utility::getStageUsingCandID() has been deprecated"
             . "Use TimePoint::getCurrentStage() instead"
-        );*/
-        $db    =& Database::singleton();
-        $query = "select DISTINCT Current_stage from session where ".
-            "CandID = :Cand_id";
-        $stage = $db->pselect($query, array('Cand_id' => $Cand_id));
-        return $stage[0]['Current_stage'];
+        );
     }
 
     /**
