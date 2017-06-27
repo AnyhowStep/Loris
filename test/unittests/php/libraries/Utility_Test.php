@@ -531,14 +531,16 @@
                 "CandID"=>69,
                 "PSCID"=>"TEMPORARY-PSCID",
                 "UserID"=>1,
-                "CenterID"=>1
+                "CenterID"=>1,
+                "Active"=>"Y"
             ]);
             Database::singleton()->insert("session", [
                 "ID"=>9999,
                 "CandID"=>69,
                 "CenterID"=>1,
                 "MRIQCStatus"=>"",
-                "Visit_label"=>"DERP"
+                "Visit_label"=>"DERP",
+                "Active"=>"Y"
             ]);
 
             $this->assertTableCount("candidate", 1);
