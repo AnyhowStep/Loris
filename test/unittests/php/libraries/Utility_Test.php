@@ -643,7 +643,20 @@
             //TODO
         }
         function test_arrayToCSV () {
-            //TODO
+            $csv = Utility::arrayToCSV([
+                "headers"=>[
+                    "A", "B", "C"
+                ],
+                "data"=>[
+                    [1,2,3],
+                    [4,5,6],
+                    [7,8,9]
+                ]
+            ]);
+            $this->assertEquals(
+                "",
+                $csv
+            );
         }
         function test__checkDate () {
             $this->assertEquals(
