@@ -552,6 +552,16 @@
                 Utility::numericArray([])
             );
 
+            //This method thinks this is numeric...
+            $this->assertEquals(
+                true,
+                Utility::numericArray([
+                    0=>0,
+                    "lol"=>999,
+                    "non-numeric"=>"jajaja"
+                ])
+            );
+
             $this->assertEquals(
                 true,
                 Utility::numericArray([
