@@ -508,23 +508,70 @@
                 Utility::columnsHasNull("users", "Password")
             );
         }
-        function test_getSubprojectIDUsingCandID () {
-            //TODO
-        }
         function test_getTestNameUsingFullName () {
-            //TODO
+            $this->assertEquals(
+                ["testtest"],
+                Utility::getTestNameUsingFullName("testtest")
+            );
         }
         function test_getSourcefields () {
-            //TODO
+            $this->assertEquals(
+                [],
+                Utility::getSourcefields("testtest")
+            );
         }
         function test_getExistingVisitLabels () {
-            //TODO
+            $this->assertTableCount("session", 1);
+            $this->assertEquals(
+                [],
+                Utility::getExistingVisitLabels(1)
+            );
         }
         function test_getVisitInstruments () {
-            //TODO
+            $this->assertTableCount("test_battery", 1);
+            $this->assertEquals(
+                [],
+                Utility::getVisitInstruments("V1")
+            );
         }
         function test_numericArray () {
-            //TODO
+            $this->assertEquals(
+                false,
+                Utility::numericArray(9)
+            );
+            $this->assertEquals(
+                false,
+                Utility::numericArray("9")
+            );
+
+            //This method thinks an empty array is non-numeric...
+            $this->assertEquals(
+                false,
+                Utility::numericArray([])
+            );
+
+            $this->assertEquals(
+                true,
+                Utility::numericArray([
+                    9,9,9,9
+                ])
+            );
+            $this->assertEquals(
+                false,
+                Utility::numericArray([
+                    1=>9,9,9,9
+                ])
+            );
+            //This is numeric but this method thinks it is non-numeric...
+            $this->assertEquals(
+                false,
+                Utility::numericArray([
+                    1=>9,
+                    0=>9,
+                    2=>9,
+                    3=>9
+                ])
+            );
         }
         function test_removeCommonAffix () {
             //TODO
