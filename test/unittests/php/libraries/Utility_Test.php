@@ -523,11 +523,42 @@
             );
         }
         function test_getExistingVisitLabels () {
+            $this->assertTableCount("candidate", 0);
+            $this->assertTableCount("session", 0);
+
+            Database::singleton()->insert("candidate", [
+                "ID"=>1337,
+                "CandID"=>69,
+                "PSCID"=>"TEMPORARY-PSCID",
+                "UserID"=>1,
+                "CenterID"=>1
+            ]);
+            Database::singleton()->insert("session", [
+                "ID"=>9999,
+                "CandID"=>69,
+                "CenterID"=>1,
+                "MRIQCStatus"=>"",
+                "Visit_label"=>"DERP"
+            ]);
+
+            $this->assertTableCount("candidate", 1);
             $this->assertTableCount("session", 1);
+
             $this->assertEquals(
-                [],
-                Utility::getExistingVisitLabels(1)
+                [
+                    "DERP"
+                ],
+                Utility::getExistingVisitLabels()
             );
+
+            Database::singleton()->delete("session", [
+                "ID"=>9999
+            ]);
+            Database::singleton()->delete("candidate", [
+                "ID"=>1337
+            ]);
+            $this->assertTableCount("candidate", 0);
+            $this->assertTableCount("session", 0);
         }
         function test_getVisitInstruments () {
             $this->assertTableCount("test_battery", 1);
@@ -592,7 +623,6 @@
                     3
                 ]
             );
-            //Thinks it's false... But it's true.
             $this->assertEquals(
                 true,
                 Utility::numericArray([
