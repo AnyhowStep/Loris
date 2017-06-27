@@ -487,7 +487,9 @@
             $this->assertEquals([], Utility::getAllDDEInstruments());
         }
         function test_getDirectInstruments () {
-            $this->assertEquals([], Utility::getDirectInstruments());
+            $this->assertEquals([
+                "testtest"=>"testtest"
+            ], Utility::getDirectInstruments());
         }
         function test_getScoredInstruments () {
             $this->assertEquals([], Utility::getScoredInstruments());
@@ -562,14 +564,32 @@
                     1=>9,9,9,9
                 ])
             );
-            //This is numeric but this method thinks it is non-numeric...
             $this->assertEquals(
-                false,
+                true,
                 Utility::numericArray([
                     1=>9,
                     0=>9,
                     2=>9,
                     3=>9
+                ])
+            );
+            $this->assertEquals(
+                [0,1,2,3],
+                [
+                    1=>1,
+                    0=>0,
+                    2,
+                    3
+                ]
+            );
+            //Thinks it's false... But it's true.
+            $this->assertEquals(
+                false,
+                Utility::numericArray([
+                    1=>1,
+                    0=>0,
+                    2,
+                    3
                 ])
             );
         }
