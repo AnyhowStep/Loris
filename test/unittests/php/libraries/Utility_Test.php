@@ -645,7 +645,16 @@
         }
         function test_removeCommonAffix () {
             $str = Utility::removeCommonAffix("suff", "fer");
-            $this->assertEquals("suffer", $str);
+            $this->assertEquals("er", $str);
+
+            $str = Utility::removeCommonAffix("suff", "ffer");
+            $this->assertEquals("er", $str);
+
+            $str = Utility::removeCommonAffix("suff", "uffer");
+            $this->assertEquals("er", $str);
+
+            $str = Utility::removeCommonAffix("suff", "suffer");
+            $this->assertEquals("er", $str);
         }
         function test_arrayToCSV () {
             $csv = Utility::arrayToCSV([
