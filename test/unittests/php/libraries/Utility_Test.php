@@ -600,7 +600,49 @@
             //TODO
         }
         function test__checkDate () {
-            //TODO
+            $this->assertEquals(
+                true,
+                Utility::_checkDate([])
+            );
+            $this->assertEquals(
+                true,
+                Utility::_checkDate([
+                    "M"=>null,
+                    "d"=>null
+                ])
+            );
+            $this->assertEquals(
+                true,
+                Utility::_checkDate([
+                    "M"=>null,
+                    "d"=>null,
+                    "Y"=>null
+                ])
+            );
+            $this->assertEquals(
+                false,
+                Utility::_checkDate([
+                    "M"=>9,
+                    "d"=>null,
+                    "Y"=>null
+                ])
+            );
+            $this->assertEquals(
+                false,
+                Utility::_checkDate([
+                    "M"=>2,
+                    "d"=>31,
+                    "Y"=>1994
+                ])
+            );
+            $this->assertEquals(
+                true,
+                Utility::_checkDate([
+                    "M"=>2,
+                    "d"=>20,
+                    "Y"=>1994
+                ])
+            );
         }
     }
 ?>
