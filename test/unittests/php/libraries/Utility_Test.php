@@ -654,7 +654,7 @@
             $this->assertEquals("er", $str);
 
             $str = Utility::removeCommonAffix("suff", "suffer");
-            $this->assertEquals("er", $str);
+            $this->assertEquals("suffer", $str);
         }
         function test_arrayToCSV () {
             $csv = Utility::arrayToCSV([
