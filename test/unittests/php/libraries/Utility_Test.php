@@ -523,6 +523,8 @@
             );
         }
         function test_getExistingVisitLabels () {
+            $this->setUpDummySites();
+
             $this->assertTableCount("candidate", 0);
             $this->assertTableCount("session", 0);
 
@@ -531,13 +533,13 @@
                 "CandID"=>69,
                 "PSCID"=>"TEMPORARY-PSCID",
                 "UserID"=>1,
-                "CenterID"=>1,
+                "CenterID"=>255,
                 "Active"=>"Y"
             ]);
             Database::singleton()->insert("session", [
                 "ID"=>9999,
                 "CandID"=>69,
-                "CenterID"=>1,
+                "CenterID"=>255,
                 "MRIQCStatus"=>"",
                 "Visit_label"=>"DERP",
                 "Active"=>"Y"
@@ -561,6 +563,8 @@
             ]);
             $this->assertTableCount("candidate", 0);
             $this->assertTableCount("session", 0);
+
+            $this->tearDownDummySites();
         }
         function test_getVisitInstruments () {
             $this->assertTableCount("test_battery", 1);
