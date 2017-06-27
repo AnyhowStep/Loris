@@ -550,7 +550,7 @@
 
             $this->assertEquals(
                 [
-                    "DERP"
+                    "DERP"=>"DERP"
                 ],
                 Utility::getExistingVisitLabels()
             );
