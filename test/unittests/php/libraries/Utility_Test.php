@@ -653,6 +653,8 @@
             $str = Utility::removeCommonAffix("suff", "uffer");
             $this->assertEquals("er", $str);
 
+            //What?
+            //This should not pass
             $str = Utility::removeCommonAffix("suff", "suffer");
             $this->assertEquals("suffer", $str);
         }
