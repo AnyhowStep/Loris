@@ -512,7 +512,7 @@
         }
         function test_getTestNameUsingFullName () {
             $this->assertEquals(
-                [["testtest"]],
+                "testtest",
                 Utility::getTestNameUsingFullName("testtest")
             );
         }
