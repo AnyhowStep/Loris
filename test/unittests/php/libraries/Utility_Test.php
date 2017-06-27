@@ -512,7 +512,7 @@
         }
         function test_getTestNameUsingFullName () {
             $this->assertEquals(
-                ["testtest"],
+                [["testtest"]],
                 Utility::getTestNameUsingFullName("testtest")
             );
         }
@@ -594,7 +594,7 @@
             );
             //Thinks it's false... But it's true.
             $this->assertEquals(
-                false,
+                true,
                 Utility::numericArray([
                     1=>1,
                     0=>0,
