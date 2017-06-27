@@ -1262,7 +1262,7 @@ class Utility
      *
      * @return True if the date is invalid, false if it's valid.
      */
-    function _checkDate($dateElement)
+    static function _checkDate($dateElement)
     {
         if (empty($dateElement['M'])
             && empty($dateElement['d'])
